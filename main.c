@@ -4,8 +4,8 @@
 #define   TX   0x02U
 #define   BAUD_RATE 9600U
 
-#define GREEN_LED 0x01
-#define RED_LED 0x40
+#define RED_LED   0x01
+#define GREEN_LED 0x40
 
 static volatile unsigned int sleepCounter;
 __attribute__((interrupt(WDT_VECTOR))) void WDT_ISR(void) {
@@ -137,11 +137,11 @@ static void commandLine(void) {
       putbyte(c);
       print("\r\n");
       switch(c) {
-         case 'g':
+         case 'r':
             print("Blinking red led...\r\n");
             P1OUT ^= RED_LED;
             break;
-         case 'r':
+         case 'g':
             print("Blinking green led...\r\n");
             P1OUT ^= GREEN_LED;
             break;
