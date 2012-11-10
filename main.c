@@ -119,6 +119,7 @@ static void print(char *s) {
 static char getbyte(void) {
    wakeAfterRx = 1;
    __bis_SR_register((unsigned int)(LPM1_bits + GIE));
+   wakeAfterRx = 0;
    return (char) receivedByte;
 }
 
