@@ -116,6 +116,15 @@ static void print(char *s) {
       s++;
    }
 }
+static void printHex(unsigned int h) {
+   unsigned int i;
+   char * digits = "0123456789abcdf";
+   for(i=0U; i<4U; i++) {
+      putbyte(digits[(0xf000U & h)>>12U]);
+      h <<= 4U;
+   }
+}
+
 static char getbyte(void) {
    wakeAfterRx = 1;
    __bis_SR_register((unsigned int)(LPM1_bits + GIE));
@@ -128,6 +137,7 @@ static void commandLine(void) {
          "Commands:\r\n"
          "r: blink red led\r\n"
          "g: blink green led\r\n"
+         "t: read temperature sensor\r\n"
          "?: print this help\r\n";
    char c;
    print(help);
@@ -144,6 +154,11 @@ static void commandLine(void) {
          case 'g':
             print("Blinking green led...\r\n");
             P1OUT ^= GREEN_LED;
+            break;
+         case 't':
+            print("Temperature: ");
+            printHex(0x1337U);
+            print("\r\n");
             break;
          case '?':
             print(help);
