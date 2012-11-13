@@ -118,7 +118,7 @@ static void print(char *s) {
 }
 static void printHex(unsigned int h) {
    unsigned int i;
-   char * digits = "0123456789abcdf";
+   char * digits = "0123456789abcdef";
    for(i=0U; i<4U; i++) {
       putbyte(digits[(0xf000U & h)>>12U]);
       h <<= 4U;
