@@ -8,7 +8,7 @@ The toolchain uses GCC/make/splint. This project is suitable to use with the Lau
 Quick start
 -------
 
-    sudo apt-get install make splint gcc-msp430
+    sudo apt-get install git make splint gcc-msp430
     git clone https://github.com/LarsH/msp430-uart.git
     cd msp430-uart
     make program
