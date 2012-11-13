@@ -27,3 +27,13 @@ The project uses the msp430 port of GCC for compiling, Splint for static code an
 ### Debian / Ubuntu
 
     apt-get install make splint gcc-msp430
+
+### OS X
+Installing instructions for gcc-msp430 and mspdebug:
+
+<http://processors.wiki.ti.com/index.php/MSP430_LaunchPad_Mac_OS_X>
+
+Installing instructions for splint:
+
+<http://www.tillett.info/2010/09/21/installing-splint-on-mac-osx/>
+
