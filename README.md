@@ -8,7 +8,7 @@ The toolchain uses GCC/make/splint. This project is suitable to use with the Lau
 Quick start
 -------
 
-    sudo apt-get install git make splint gcc-msp430 mspdebug screen git
+    sudo apt-get install git make splint gcc-msp430
     git clone https://github.com/LarsH/msp430-uart.git
     cd msp430-uart
     make program
@@ -22,16 +22,18 @@ It is killed with the key combination
 Dependencies
 -------
 
-The project uses the msp430 port of GCC for compiling, Splint for static code analysis and GNU Make to manage the build environment. To communicate with the serial port a terminal program is needed, the program screen works fine.
+The project uses the msp430 port of GCC for compiling, Splint for static code analysis and GNU Make to manage the build environment.
 
 ### Debian / Ubuntu
 
-    apt-get install make splint gcc-msp430 mspdebug screen
+    apt-get install make splint gcc-msp430
 
 ### OS X
 Installing instructions for gcc-msp430 and mspdebug:
 
 <http://processors.wiki.ti.com/index.php/MSP430_LaunchPad_Mac_OS_X>
+
+However, the scripts for building mspgcc4 uses wget so either build and install wget or update the do-[gdb,gcc,libc,binutils].sh scripts to use curl instead of wget.
 
 Installing instructions for splint:
 
