@@ -23,6 +23,29 @@ static void sleep(unsigned int t) {
    __bis_SR_register((unsigned int)(LPM1_bits + GIE));
 }
 
+#ifdef __MSP430_HAS_SD16_A1__
+static unsigned int readTemperature(void) {
+   return SD16MEM0;
+}
+static void initADC(void) {
+   SD16CTL = (unsigned int) SD16SSEL_1 | SD16REFON | SD16XDIV_3 | SD16DIV_3;
+   SD16INCTL0 = (unsigned int) SD16INCH_6;
+   SD16CCTL0 = (unsigned int) SD16SC;
+}
+#elif defined __MSP430_HAS_ADC10__
+static unsigned int readTemperature(void) {
+      return ADC10MEM;
+}
+static void initADC(void) {
+   /* XXX This initialization does not work! FIXME */
+   ADC10CTL0 = (unsigned int) SREF0 | ADC10SHT_2 | ADC10ON | REFON | REF2_5V;
+   ADC10CTL1 = (unsigned int) INCH_10;
+   ADC10CTL0 |= (unsigned int) ENC | ADC10SC;
+}
+#else
+#error Could not recognize ADC hardware!
+#endif
+
 static volatile unsigned char rxBitCounter; /* How many more bits to receive, minus one.
                                  0 means one more bit to receive. */
 static volatile unsigned char recvBits; /* Current receiving byte buffer */
@@ -164,7 +187,7 @@ static void commandLine(void) {
             break;
          case 't':
             print("Temperature: ");
-            printHex(0x1337U);
+            printHex(readTemperature());
             print("\r\n");
             break;
          case '?':
@@ -198,6 +221,7 @@ int main(void) {
    TACTL = (unsigned int) (TASSEL_2 + MC_1 + ID_1);  /* SMCLK/2, upmode */
    CCR0 =  6000000UL/BAUD_RATE; /* 12000000.0 / 2 / BAUD_RATE*/
 
+   initADC();
    commandLine();
    for(;;);
 }
