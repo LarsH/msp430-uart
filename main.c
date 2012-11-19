@@ -31,7 +31,14 @@ static volatile unsigned int txBits;
 static volatile unsigned char receivedByte; /* Last received byte */
 static volatile char isReceiving, isTransmitting;
 static volatile char wakeAfterRx, wakeAfterTx;
-__attribute__((interrupt(TIMERA0_VECTOR))) void TIMERA0_ISR(void) {
+#ifdef __MSP430_HAS_TA2__
+__attribute__((interrupt(TIMERA0_VECTOR)))
+#elif defined __MSP430_HAS_TA3__
+__attribute__((interrupt(TIMER0_A0_VECTOR)))
+#else
+#error Could not recognize Timer hardware!
+#endif
+void TIMERA0_ISR(void) {
    if(isReceiving) {
 
       recvBits >>= 1U;
