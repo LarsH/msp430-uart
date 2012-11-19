@@ -1,5 +1,10 @@
+include config.mcu
+
+MCU_UPPER = $(shell echo $(MCU) | tr a-z A-Z)
+MCU_lower = $(shell echo $(MCU) | tr A-Z a-z)
+
 CC := msp430-gcc
-CFLAGS := -mmcu=msp430f2013 -Wall -pedantic -C90 -Os
+CFLAGS := -mmcu=msp430$(MCU_lower) -Wall -pedantic -C90 -Os
 DEBUG := mspdebug
 DFLAGS := rf2500
 LINT := splint
@@ -8,9 +13,10 @@ LINTFLAGS := -I /usr/msp430/include -D__MSP430_IOMACROS_H_= \
    "-Dsfrw(x,x_)=volatile extern unsigned int x" \
    "-Dconst_sfrb(x,x_)=volatile extern const unsigned char x" \
    "-Dconst_sfrw(x,x_)=volatile extern const unsigned int x" \
+   "-D__MSP430$(MCU_UPPER)__" \
    -checks -exportheader +boolint +charint -namechecks
 
-TARGETNAME := mspuart
+TARGETNAME := mspuart_$(MCU_lower)
 SRC := main.c
 
 #-include $(SRC:%.c=%.d)
@@ -31,3 +37,6 @@ program: $(TARGETNAME).elf
 .PHONY: debug
 debug:
 	$(DEBUG) $(DFLAGS)
+
+config.mcu:
+	(echo exit | $(DEBUG) $(DFLAGS) 2>/dev/null) | (grep 'Device:' | sed 's/^.*MSP430/MCU=/') > $@

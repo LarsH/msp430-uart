@@ -12,12 +12,17 @@ Quick start
     git clone https://github.com/LarsH/msp430-uart.git
     cd msp430-uart
     make program
-    screen /dev/ttyACM0 9600   
+    screen /dev/ttyACM0 9600
 
 The screen should not be detached from, but killed, when done with the session.
 It is killed with the key combination
 
     Ctrl-a k
+
+Choosing the target MCU
+-------
+
+The build environment reads the cpu type from the file config.mcu. It is initialized automatically, but be sure to change it if you change MCU! It is enough to just delete config.mcu and let the Makefile recreate it.
 
 Dependencies
 -------

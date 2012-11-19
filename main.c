@@ -1,4 +1,4 @@
-#include <msp430f2013.h>
+#include <msp430.h>
 
 #define   RX   0x04U
 #define   TX   0x02U
