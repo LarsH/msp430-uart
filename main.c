@@ -210,10 +210,10 @@ int main(void) {
    DCOCTL = CALDCO_12MHZ;
 
    /* Setup initial pin directions */
-   P1DIR &= RX;
+   P1DIR &= ~RX;
    P1DIR |= (TX | RED_LED | GREEN_LED);
 
-   P1IES &= RX;  /* RX normally high, interrupt on falling edge */
+   P1IES |= RX;  /* RX normally high, interrupt on falling edge */
    P1IE  |= RX;  /* Enable RX start bit interrupt */
    P1IFG &= ~RX; /* Clear interrupt */
 
