@@ -34,11 +34,9 @@ The project uses the msp430 port of GCC for compiling, Splint for static code an
     apt-get install make splint gcc-msp430 mspdebug screen
 
 ### OS X
-Installing instructions for gcc-msp430 and mspdebug:
+Package with gcc-msp430 and mspdebug:
 
-<http://processors.wiki.ti.com/index.php/MSP430_LaunchPad_Mac_OS_X>
-
-However, the scripts for building mspgcc4 uses wget so either build and install wget or update the do-[gdb,gcc,libc,binutils].sh scripts to use curl instead of wget.
+<http://code.google.com/p/osx-launchpad/downloads/list>
 
 Installing instructions for splint:
 
