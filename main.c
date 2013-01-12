@@ -33,15 +33,29 @@ static void initADC(void) {
    SD16CCTL0 = (unsigned int) SD16SC;
 }
 #elif defined __MSP430_HAS_ADC10__
+
+static volatile unsigned int val;
 static unsigned int readTemperature(void) {
-      return ADC10MEM;
+
+    ADC10CTL0 |= ENC + ADC10SC;
+    while (!(ADC10CTL0 & ADC10IFG))
+    
+   val = ADC10MEM;
+ 
+   while (ADC10CTL1 & ADC10BUSY)
+   
+   ADC10CTL0 &= ~ENC;
+   ADC10CTL0 &= ~ADC10IFG;
+
+   return val;
 }
 static void initADC(void) {
-   /* XXX This initialization does not work! FIXME */
-   ADC10CTL0 = (unsigned int) SREF0 | ADC10SHT_2 | ADC10ON | REFON | REF2_5V;
-   ADC10CTL1 = (unsigned int) INCH_10;
-   ADC10CTL0 |= (unsigned int) ENC | ADC10SC;
+   
+   ADC10CTL0 = SREF_1 + ADC10SHT_3 + REFON + ADC10ON;
+   ADC10CTL1 = INCH_10 + ADC10DIV_3;   
+
 }
+
 #else
 #error Could not recognize ADC hardware!
 #endif
