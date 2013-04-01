@@ -1,14 +1,16 @@
 #include <msp430.h>
 
-#define   RX   0x04U
-#define   TX   0x02U
+#define   RX   0x80U
+#define   TX   0x40U
 #define   BAUD_RATE 9600U
 
-#define RED_LED   0x01
-#define GREEN_LED 0x40
+#define RED_LED   0x02
+#define LDR_POWER 0x08
+#define SPEAKER   0x20
 
 static volatile unsigned int sleepCounter;
 __attribute__((interrupt(WDT_VECTOR))) void WDT_ISR(void) {
+   P1OUT ^= SPEAKER;
    if(sleepCounter != 0U) {
       sleepCounter--;
       if(sleepCounter == 0U) {
@@ -56,7 +58,7 @@ static unsigned int readTemperature(void) {
 
 static void initADC(void) {
    ADC10CTL0 = (unsigned int) (SREF_1 + ADC10SHT_3 + REFON + ADC10ON);
-   ADC10CTL1 = (unsigned int) (INCH_10 + ADC10DIV_3);
+   ADC10CTL1 = (unsigned int) (INCH_0 + ADC10DIV_3);
 }
 
 #else
@@ -183,7 +185,7 @@ static void commandLine(void) {
    char * help = "Uart test program\r\n"
          "Commands:\r\n"
          "r: blink red led\r\n"
-         "g: blink green led\r\n"
+         "l: toggle ldr power\r\n"
          "t: read temperature sensor\r\n"
          "?: print this help\r\n";
    char c;
@@ -198,13 +200,18 @@ static void commandLine(void) {
             print("Blinking red led...\r\n");
             P1OUT ^= RED_LED;
             break;
-         case 'g':
-            print("Blinking green led...\r\n");
-            P1OUT ^= GREEN_LED;
+         case 'l':
+            P1OUT ^= LDR_POWER;
+            print("Toggling ldr power...");
+            printHex(!!(P1OUT & LDR_POWER));
+            print("\r\n");
             break;
          case 't':
             print("Temperature: ");
-            printHex(readTemperature());
+            for(c=0; c<10; c++) {
+               printHex(readTemperature());
+               print(" ");
+            }
             print("\r\n");
             break;
          case '?':
@@ -228,7 +235,10 @@ int main(void) {
 
    /* Setup initial pin directions */
    P1DIR &= ~RX;
-   P1DIR |= (TX | RED_LED | GREEN_LED);
+   P1DIR |= (TX | RED_LED | LDR_POWER | SPEAKER);
+
+   /* Enable ADC on P1.0 */
+   ADC10AE0 = 0x01U;
 
    P1IES |= RX;  /* RX normally high, interrupt on falling edge */
    P1IE  |= RX;  /* Enable RX start bit interrupt */
