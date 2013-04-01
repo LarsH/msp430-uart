@@ -34,26 +34,29 @@ static void initADC(void) {
 }
 #elif defined __MSP430_HAS_ADC10__
 
-static volatile unsigned int val;
+__attribute__((interrupt(ADC10_VECTOR)))
+void ADC10_ISR(void) {
+
+   /* ADC conversion complete. Clean flags and wake up. */
+   ADC10CTL0 &= (unsigned int) ~(ENC + ADC10IFG);
+   __bic_SR_register_on_exit((unsigned int) LPM1_bits);
+}
+
 static unsigned int readTemperature(void) {
 
-    ADC10CTL0 |= ENC + ADC10SC;
-    while (!(ADC10CTL0 & ADC10IFG))
-    
-   val = ADC10MEM;
- 
-   while (ADC10CTL1 & ADC10BUSY)
-   
-   ADC10CTL0 &= ~ENC;
-   ADC10CTL0 &= ~ADC10IFG;
+   /* Clear interrupt flag, enable and start conversion, enable interrupt */
+   ADC10CTL0 &= (unsigned int) ~ADC10IFG;
+   ADC10CTL0 |= (unsigned int) (ENC + ADC10SC + ADC10IE);
 
-   return val;
+   /* Sleep and wait for ADC interrupt */
+   __bis_SR_register((unsigned int)(LPM1_bits + GIE));
+
+   return ADC10MEM;
 }
-static void initADC(void) {
-   
-   ADC10CTL0 = SREF_1 + ADC10SHT_3 + REFON + ADC10ON;
-   ADC10CTL1 = INCH_10 + ADC10DIV_3;   
 
+static void initADC(void) {
+   ADC10CTL0 = (unsigned int) (SREF_1 + ADC10SHT_3 + REFON + ADC10ON);
+   ADC10CTL1 = (unsigned int) (INCH_10 + ADC10DIV_3);
 }
 
 #else
